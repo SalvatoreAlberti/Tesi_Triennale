@@ -1,18 +1,49 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
-
 
 public class HuggingFaceAPI : MonoBehaviour
 {
     private string apiUrl = "https://api-inference.huggingface.co/models/google/flan-t5-base";
-    private string apiKey = "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";
+    private string apiKey;
+
+    // Carica l'access token dal file config.json
+    private void LoadApiKey()
+    {
+        string configPath = Path.Combine(Application.streamingAssetsPath, "config.json");
+
+        if (File.Exists(configPath))
+        {
+            string json = File.ReadAllText(configPath);
+            JObject config = JObject.Parse(json);
+            apiKey = config["apiKey"]?.ToString();  // Preleva l'apiKey dal JSON
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                Debug.LogError("API Key non trovata nel file di configurazione.");
+            }
+        }
+        else
+        {
+            Debug.LogError("File di configurazione non trovato.");
+        }
+    }
 
     public IEnumerator SendRequest(string prompt, System.Action<string> callback)
     {
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            LoadApiKey();
+        }
+
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            callback(null);
+            yield break;
+        }
+
         var payload = new
         {
             inputs = prompt
@@ -41,12 +72,11 @@ public class HuggingFaceAPI : MonoBehaviour
                 string response = request.downloadHandler.text;
                 Debug.Log("Risposta ricevuta: " + response);
 
-                // Controlla se il modello è ancora in fase di caricamento
                 if (response.Contains("\"error\":\"Model") && response.Contains("is currently loading"))
                 {
                     Debug.LogWarning("Il modello è in fase di caricamento. Riprovo...");
                     retryCount++;
-                    yield return new WaitForSeconds(10); // Aspetta 10 secondi prima di riprovare
+                    yield return new WaitForSeconds(10); 
                 }
                 else
                 {
@@ -63,7 +93,7 @@ public class HuggingFaceAPI : MonoBehaviour
                         Debug.LogError("Errore nel parsing della risposta JSON: " + e.Message);
                         callback(null);
                     }
-                    retry = false; // Successo, esce dal ciclo
+                    retry = false; 
                 }
             }
             else
