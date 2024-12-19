@@ -1,0 +1,5 @@
+20:57:42: aa created room aa
+20:57:42: aa joined the room
+20:58:28: aa raised a hand!
+20:58:48: aa raised a hand!
+20:59:16: aa raised a hand!

@@ -12,11 +12,11 @@ public class ChatbotMenuToggle : MonoBehaviour
         chatbotPanel.SetActive(!isActive);
     }
     void Update()
-        {
-            if(Input.GetKeyUp(KeyCode.L)) {
-                bool isActive = chatbotPanel.activeSelf;
-                chatbotPanel.SetActive(!isActive);
-            }
+    {
+        if(Input.GetKeyUp(KeyCode.L)) {
+            bool isActive = chatbotPanel.activeSelf;
+            chatbotPanel.SetActive(!isActive);
         }
+    }
 
 }
