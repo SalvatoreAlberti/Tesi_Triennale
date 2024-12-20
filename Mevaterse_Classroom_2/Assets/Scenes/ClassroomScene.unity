@@ -5918,7 +5918,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 679045735}
   m_HandleRect: {fileID: 679045734}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 6
   m_OnValueChanged:
@@ -26810,6 +26810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chatbotPanel: {fileID: 1432291941}
+  inputField: {fileID: 2066769732}
 --- !u!54 &1892053764
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -28927,12 +28928,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2066769730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be342f32a5f66a9468b9353082585148, type: 3}
+  m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 2066769732}
-  mainCamera: {fileID: 72265472}
-  isInputFieldFocused: 0
 --- !u!1 &2081654334
 GameObject:
   m_ObjectHideFlags: 0

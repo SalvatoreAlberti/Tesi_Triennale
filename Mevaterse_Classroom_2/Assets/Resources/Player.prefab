@@ -2377,6 +2377,7 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
   isTyping: 0
+  ChatBotinputField: {fileID: 0}
   volumeIcon: {fileID: 2982578426266627717}
   playerName: {fileID: 6856924244480619952}
   overhead: {fileID: 2432327588793178383}

@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private bool isWaving;
     public bool isTyping;
     private TextChat textChat;
+    public TMP_InputField ChatBotinputField;
     public TMP_Text volumeIcon;
     public TMP_Text playerName;
     public Transform overhead;
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         mouseX.Enable();
         mouseY.Enable();
         textChat = GameObject.Find("TextChat").GetComponent<TextChat>();
+        ChatBotinputField = GameObject.Find("InputField (Utente)").GetComponent<TMPro.TMP_InputField>();
     }
 
     public override void OnDisable()
@@ -123,11 +125,21 @@ public class PlayerController : MonoBehaviourPunCallbacks
         transform.position = spawnPosition + new Vector3((float)(-photonView.ViewID)/10000f, 0, 0);        
         gameObject.SetActive(true);
     }
+    
 
     private void Update()
     {
         if (!photonView.IsMine) { return; }
 
+        if (ChatBotinputField.isFocused)
+        {
+            controller.enabled = false;
+            return;
+        }
+        else if (!controller.enabled)
+        {
+            controller.enabled = true;
+        }
         controller.Move(velocity * Time.deltaTime);
 
         // Camera Movement
@@ -173,25 +185,25 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
 
         // Player sitting 
-        if (Input.GetKeyUp(KeyCode.C) && chair != null && !chair.GetComponent<ChairController>().IsBusy() && !isSitting && !isMoving && !isBackwardMoving && !textChat.isSelected)
+        if (Input.GetKeyUp(KeyCode.C) && chair != null && !chair.GetComponent<ChairController>().IsBusy() && !isSitting && !isMoving && !isBackwardMoving && !textChat.isSelected && !ChatBotinputField.isFocused)
         {
             Seat();
         }
 
         else if (Input.GetKeyUp(KeyCode.C) && isSitting && !Input.GetKey(KeyCode.W) && 
-            !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D) && !textChat.isSelected && !isTyping)
+            !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D) && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused)
         {
             GetUp();
         }
 
         // Player writing on whiteboard
-        if (Input.GetKeyUp(KeyCode.Space) && whiteBoard != null && !whiteBoard.isBeingEdited && !textChat.isSelected)
+        if (Input.GetKeyUp(KeyCode.Space) && whiteBoard != null && !whiteBoard.isBeingEdited && !textChat.isSelected && !ChatBotinputField.isFocused)
         {
             EditWhiteboard();
         }
 
         else if (Input.GetKeyUp(KeyCode.Escape) && whiteBoard != null && whiteBoard.isBeingEdited && 
-            Presenter.Instance.writerID == PhotonNetwork.LocalPlayer.UserId && !textChat.isSelected)
+            Presenter.Instance.writerID == PhotonNetwork.LocalPlayer.UserId && !textChat.isSelected && !ChatBotinputField.isFocused)
         {
             StopEditWhiteboard();
         }
@@ -200,7 +212,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             handRaiseCooldown -= Time.deltaTime;
 
         // If the player presses M, the character raises their hand
-        if (Input.GetKeyUp(KeyCode.M) && handRaiseCooldown <= 0 && !textChat.isSelected && !isTyping)
+        if (Input.GetKeyUp(KeyCode.M) && handRaiseCooldown <= 0 && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused)
         {
             RaiseHand();
             handRaiseCooldown = 10;
@@ -210,7 +222,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             controller.enabled = false;
         }
-        else if(!textChat.isSelected && !isSitting && !isTyping && controller.enabled == false)
+        else if(!textChat.isSelected && !isSitting && !isTyping && controller.enabled == false && !ChatBotinputField.isFocused)
         {
             controller.enabled = true;
         }
@@ -243,7 +255,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void AnimatorChecker(Vector3 moveVelocity)
     {
-        isMoving = ((moveVelocity.x != 0 || moveVelocity.y != 0 || moveVelocity.z != 0) && !textChat.isSelected && !isTyping);
+        isMoving = ((moveVelocity.x != 0 || moveVelocity.y != 0 || moveVelocity.z != 0) && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused);
         isBackwardMoving = false;
         handRaised = false;
         isWaving = false;
@@ -251,7 +263,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         isTyping = /*(GetComponent<TabletSpawner>().tablet.GetComponent<TabletManager>().isBeingEdited) || */(PhotonNetwork.LocalPlayer.UserId == Presenter.Instance.writerID);
 
         // If the player is walking backward, this changes the animation and slows down the speed
-        if (Input.GetKey(KeyCode.S) && !textChat.isSelected && !isTyping)
+        if (Input.GetKey(KeyCode.S) && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused)
         {
             isBackwardMoving = true;
             isMoving = false;
@@ -268,17 +280,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
             animatorController.SetBool("IsMovingBackward", false);
         }
 
-        if (Input.GetKey(KeyCode.M) && handRaiseCooldown <= 0 && !textChat.isSelected && !isTyping)
+        if (Input.GetKey(KeyCode.M) && handRaiseCooldown <= 0 && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused)
         {
             handRaised = true;
         }
 
-        if (Input.GetKey(KeyCode.N) && !textChat.isSelected && !isTyping)
+        if (Input.GetKey(KeyCode.N) && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused)
         {
             isWaving = true;
         }
 
-        if (Input.GetKey(KeyCode.V) && !textChat.isSelected && !isTyping)
+        if (Input.GetKey(KeyCode.V) && !textChat.isSelected && !isTyping && !ChatBotinputField.isFocused)
         {
             isClapping = true;
         }

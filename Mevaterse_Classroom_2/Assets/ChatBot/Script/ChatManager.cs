@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic; // Aggiunto per Dictionary
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;

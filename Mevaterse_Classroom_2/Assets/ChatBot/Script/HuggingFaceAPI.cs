@@ -80,7 +80,8 @@ public class HuggingFaceAPI : MonoBehaviour
                 }
                 else
                 {
-                    // Parse della risposta JSON
+ 
+                   // Parse della risposta JSON
                     try
                     {
                         JArray jsonResponse = JArray.Parse(response);
