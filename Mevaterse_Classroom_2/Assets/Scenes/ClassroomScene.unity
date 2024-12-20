@@ -9889,6 +9889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c927a4b149dd87c468bc0a55c26d099e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ChatBotinputField: {fileID: 0}
 --- !u!1 &773612622
 GameObject:
   m_ObjectHideFlags: 0
