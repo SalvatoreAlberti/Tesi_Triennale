@@ -23,7 +23,7 @@ public class ChangeColor : MonoBehaviour
             if (isOriginalColor)
             {
                 objectRenderer.material.color = new Color(
-                    Random.value, Random.value, Random.value);
+                Random.value, Random.value, Random.value);
             }
             else
             {
