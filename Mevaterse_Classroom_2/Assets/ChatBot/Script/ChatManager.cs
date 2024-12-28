@@ -20,18 +20,27 @@ public class ChatManager : MonoBehaviour
     public GameObject messageBubbleChatPrefab;
 
     [Header("API References")]
-    public HuggingFaceAPI huggingFaceAPI; // Riferimento all'oggetto API
+    public HuggingFaceAPI huggingFaceAPI;
 
+    [Header("Scene References")]
+    public GameObject wall;
+    public GameObject board;    
 
+    private Vector3 originalPosition;
+    private Quaternion originalRotation;
+    
     private void Start()
     {
         sendButton.onClick.AddListener(SendMessage);
-        Debug.Log("Pulsante 'Invia' configurato correttamente.");
-        AddMessage("Ciao, come posso aiutarti?", false);
-        AddMessage("Posso spostare la lavanga a destra o a sinistra. Posso Cambiare il colore della parete in rosso, blu, verde, rosa, giallo o in colore originale", false);
+
+         // Salva la posizione e la rotazione originali della lavagna
+        originalPosition = board.transform.position;
+        originalRotation = board.transform.rotation;
+
+        AddMessage("Ciao, come posso aiutarti?\nPosso spostare la lavanga a destra o a sinistra. Posso Cambiare il colore della parete in rosso, blu, verde, rosa, giallo o in colore originale", false);
     }
 
-public void SendMessage()
+    public void SendMessage()
 {
     string userMessage = inputField.text.Trim();
     if (string.IsNullOrEmpty(userMessage))
@@ -78,7 +87,7 @@ public void SendMessage()
     private void ScrollToBottom()
     {
         ScrollRect scrollRect = chatContent.GetComponentInParent<ScrollRect>();
-        scrollRect.verticalNormalizedPosition = 0f; // Scorri fino in fondo
+        scrollRect.verticalNormalizedPosition = 0f;
     }
 
     private string TranslateToEnglish(string text)
@@ -99,6 +108,9 @@ public void SendMessage()
             {"verde", "green"},
             {"giallo", "yellow"},
             {"rosa", "pink"},
+            {"originale", "original"},
+            {"con il suo colore originale", "with the original color"},
+            {"con il colore originale", "with the original color"},
             {"colore originale", "original color"},
             {"colore", "color"},
             {"lavagna", "board"},
@@ -112,7 +124,7 @@ public void SendMessage()
             {"Sinistra", "left"}
         };
 
-        text = text.ToLower(); // Converti a minuscolo per uniformità
+        text = text.ToLower();
         bool recognized = false;
 
         foreach (var entry in translationDictionary)
@@ -139,7 +151,6 @@ public void SendMessage()
         string oggetto = string.Empty;
         string parametro = string.Empty;
 
-        // Traduci il messaggio in inglese
         string translatedMessage = TranslateToEnglish(userMessage);
         Debug.Log($"Messaggio tradotto: {translatedMessage}");
 
@@ -164,12 +175,11 @@ public void SendMessage()
                 if (parametro == "Right")
                 {
                     if(posLavagna == "Destra"){
-                        AddMessage("La lavagna si trova già a destra", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("La lavagna si trova già a destra\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(posLavagna == "Sinistra"){
-                        AddMessage("Lavagna spostata correttamente a destra", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        MoveBoard(parametro);
+                        AddMessage("Lavagna spostata correttamente a destra\n Posso aiutarti in quale altro modo?", false);
                         posLavagna = "Destra";
                         yield break;
                     }
@@ -178,12 +188,11 @@ public void SendMessage()
                 else if (parametro == "Left")
                 {
                     if(posLavagna == "Sinistra"){
-                        AddMessage("La lavagna si trova già a sinistra", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("La lavagna si trova già a sinistra\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(posLavagna == "Destra"){
-                        AddMessage("Lavagna spostata correttamente a sinistra", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        MoveBoard(parametro);
+                        AddMessage("Lavagna spostata correttamente a sinistra\n Posso aiutarti in quale altro modo?", false);
                         posLavagna = "Sinistra";
                         yield break;
                     }
@@ -204,24 +213,22 @@ public void SendMessage()
                 if (parametro == "Red")
                 {
                     if(colParete == "Rosso"){
-                        AddMessage("Il colore della parete è già rosso", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("Il colore della parete è già rosso\n Posso aiutarti in quale altro modo?", false);
                         yield break;    
                     }else if(colParete != "Rosso"){
-                        AddMessage("Colore della parete modificato correttamente in rosso", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        ChangeWallColor(parametro);
+                        AddMessage("Colore della parete modificato correttamente in rosso\n Posso aiutarti in quale altro modo?", false);
                         colParete = "Rosso";
                         yield break;
                     }
                 }else if (parametro == "Blue")
                 {
                     if(colParete == "Blu"){
-                        AddMessage("Il colore della parete è già blu", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("Il colore della parete è già blu\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(colParete != "Blue"){
-                        AddMessage("Colore della parete modificato correttamente in blu", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        ChangeWallColor(parametro);
+                        AddMessage("Colore della parete modificato correttamente in blu\n Posso aiutarti in quale altro modo?", false);
                         colParete = "Blu";
                         yield break;
                     }
@@ -229,12 +236,11 @@ public void SendMessage()
                 }else if (parametro == "Green")
                 {
                     if(colParete == "Green"){
-                        AddMessage("Il colore della parete è già verde", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("Il colore della parete è già verde\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(colParete != "Green"){
-                        AddMessage("Colore della parete modificato correttamente in verde", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        ChangeWallColor(parametro);
+                        AddMessage("Colore della parete modificato correttamente in verde\n Posso aiutarti in quale altro modo?", false);
                         colParete = "Verde";
                         yield break;
                     }
@@ -242,12 +248,11 @@ public void SendMessage()
                 }else if (parametro == "Pink")
                 {
                     if(colParete == "Rosa"){
-                        AddMessage("Il colore della parete è già rosa", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("Il colore della parete è già rosa\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(colParete != "Rosa"){
-                        AddMessage("Colore della parete modificato correttamente in rosa", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        ChangeWallColor(parametro);
+                        AddMessage("Colore della parete modificato correttamente in rosa\n Posso aiutarti in quale altro modo?", false);
                         colParete = "Rosa";
                         yield break;
                     }
@@ -255,12 +260,11 @@ public void SendMessage()
                 }else if (parametro == "Yellow")
                 {
                     if(colParete == "Giallo"){
-                        AddMessage("Il colore della parete è già giallo", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("Il colore della parete è già giallo\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(colParete != "Giallo"){
-                        AddMessage("Colore della parete modificato correttamente in giallo", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        ChangeWallColor(parametro);
+                        AddMessage("Colore della parete modificato correttamente in giallo\n Posso aiutarti in quale altro modo?", false);
                         colParete = "Giallo";
                         yield break;
                     }
@@ -268,12 +272,11 @@ public void SendMessage()
                 }else if (parametro == "Original")
                 {
                     if(colParete == "Originale"){
-                        AddMessage("Il colore della parete è già con il suo colore originale", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        AddMessage("Il colore della parete è già con il suo colore originale\n Posso aiutarti in quale altro modo?", false);
                         yield break;
                     }else if(colParete != "Originale"){
-                        AddMessage("Colore della parete modificato correttamente con il suo colore originale", false);
-                        AddMessage("Posso aiutarti in quale altro modo?", false);
+                        ChangeWallColor(parametro);
+                        AddMessage("Colore della parete modificato correttamente con il suo colore originale\n Posso aiutarti in quale altro modo?", false);
                         colParete = "Originale";
                         yield break;
                     }
@@ -398,10 +401,74 @@ public void SendMessage()
 
     }
 
-
-
     private void ClearInputField()
     {
         inputField.text = string.Empty;
     }
+
+    private void ChangeWallColor(string color)
+    {
+        Color newColor;
+        switch (color)
+        {
+            case "Red":
+                newColor = Color.red;
+                break;
+            case "Blue":
+                newColor = Color.blue;
+                break;
+            case "Green":
+                newColor = Color.green;
+                break;
+            case "Pink":
+                newColor = new Color(1f, 0.75f, 0.8f); 
+                break;
+            case "Yellow":
+                newColor = Color.yellow;
+                break;
+            case "Original":
+            default:
+                newColor = Color.white; 
+                break;
+        }
+
+        Renderer wallRenderer = wall.GetComponent<Renderer>();
+        if (wallRenderer != null)
+        {
+            wallRenderer.material.color = newColor;
+        }
+        else
+        {
+            Debug.LogWarning("Renderer della parete non trovato!");
+        }
+    }
+
+    private void MoveBoard(string direction)
+    {
+        Vector3 newPosition;
+        Quaternion newRotation;
+
+        switch (direction)
+        {
+            case "Right":
+                newPosition = new Vector3(6.3f, board.transform.position.y, 9.0f);
+                newRotation = Quaternion.Euler(0, 20, 0); 
+                break;
+
+            case "Left":
+                newPosition = originalPosition;
+                newRotation = originalRotation;
+                break;
+
+            default:
+                Debug.LogWarning("Direzione non valida per lo spostamento.");
+                return;
+        }
+
+        board.transform.position = newPosition;
+        board.transform.rotation = newRotation;
+
+        Debug.Log($"Lavagna spostata a {direction}. Posizione: {newPosition}, Rotazione: {newRotation.eulerAngles}");
+    }
+
 }

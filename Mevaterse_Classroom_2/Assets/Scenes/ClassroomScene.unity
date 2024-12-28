@@ -2047,6 +2047,8 @@ MonoBehaviour:
   messageBubbleUtentePrefab: {fileID: 6923735247518446292, guid: 457f6cab74c3151459018530c18193eb, type: 3}
   messageBubbleChatPrefab: {fileID: 8911868881599771737, guid: 1af090b7ba6ab72418fc5a056ca542d6, type: 3}
   huggingFaceAPI: {fileID: 2130697755}
+  wall: {fileID: 4605038942194111339}
+  board: {fileID: 1102859752}
 --- !u!4 &133381088
 Transform:
   m_ObjectHideFlags: 0
@@ -5918,7 +5920,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 679045735}
   m_HandleRect: {fileID: 679045734}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 6
   m_OnValueChanged:
@@ -15935,10 +15937,10 @@ RectTransform:
   m_Father: {fileID: 2066769731}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 3.049797, y: -0.4999962}
-  m_SizeDelta: {x: -13.9004, y: -13}
+  m_SizeDelta: {x: 88.0996, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1156918925
 MonoBehaviour:
@@ -21966,7 +21968,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.2, y: -0.1}
+  m_AnchoredPosition: {x: -4.200001, y: -0.099999905}
   m_SizeDelta: {x: 0, y: 8.6097}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1558575423
@@ -41686,6 +41688,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b372183746218644d9d5c326a2f4e111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectRenderer: {fileID: 0}
+  originalColor:
+    r: 0
+    g: 0
+    b: 0
+    a: 0
+  isOriginalColor: 1
 --- !u!33 &8462149319058941154
 MeshFilter:
   m_ObjectHideFlags: 0
